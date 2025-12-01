@@ -215,23 +215,52 @@ const Index = () => {
 
       <section className="pt-28 pb-16 px-4 bg-gradient-to-br from-blue-50 to-white">
         <div className="container mx-auto">
-          <div className="max-w-3xl">
-            <Badge className="mb-4 bg-destructive text-white px-4 py-2 text-base">
-              Promocja ograniczona czasowo
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4 leading-tight">
-              Fabryczne miękkie okna pod klucz
-            </h1>
-            <p className="text-2xl text-accent mb-6 font-semibold">
-              z oszczędnością do 1500 PLN
-            </p>
-            <p className="text-lg text-muted-foreground mb-8">
-              Własna produkcja • Montaż w jeden dzień • Gwarancja 5 lat
-            </p>
-            <Button size="lg" className="text-lg px-10 py-6 rounded-full">
-              <Icon name="Calculator" size={20} className="mr-2" />
-              Poznaj koszt
-            </Button>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="max-w-2xl">
+              <Badge className="mb-4 bg-destructive text-white px-4 py-2 text-base">
+                Promocja ograniczona czasowo
+              </Badge>
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4 leading-tight">
+                Fabryczne miękkie okna pod klucz
+              </h1>
+              <p className="text-2xl text-accent mb-6 font-semibold">
+                z oszczędnością do 1500 PLN
+              </p>
+              <p className="text-lg text-muted-foreground mb-8">
+                Własna produkcja • Montaż w jeden dzień • Gwarancja 5 lat
+              </p>
+              <Button size="lg" className="text-lg px-10 py-6 rounded-full">
+                <Icon name="Calculator" size={20} className="mr-2" />
+                Poznaj koszt
+              </Button>
+            </div>
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl hover-scale">
+                <img
+                  src="https://cdn.poehali.dev/projects/0fb3d59f-1909-4ff9-a40c-f2972b1e388f/files/82e46826-0197-4ba7-8a11-38d16c139724.jpg"
+                  alt="Miękkie okna PVC - profesjonalna instalacja"
+                  className="w-full h-auto"
+                />
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Star" size={16} className="text-yellow-500 fill-yellow-500" />
+                    <span className="font-bold text-sm">4.9/5</span>
+                    <span className="text-xs text-muted-foreground">(500+ opinii)</span>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 max-w-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                    <Icon name="CheckCircle" size={24} className="text-secondary" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-lg">500+</div>
+                    <div className="text-sm text-muted-foreground">Zadowolonych klientów</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
