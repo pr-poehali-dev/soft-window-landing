@@ -13,6 +13,76 @@ const Index = () => {
     message: "",
   });
 
+  const [calcData, setCalcData] = useState({
+    width: "",
+    height: "",
+    material: "standard",
+  });
+
+  const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
+
+  const [quizStep, setQuizStep] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState({
+    type: "",
+    size: "",
+    installation: "",
+  });
+
+  const calculatePrice = () => {
+    const width = parseFloat(calcData.width);
+    const height = parseFloat(calcData.height);
+    if (!width || !height) return;
+
+    const area = width * height;
+    let pricePerSqm = 450;
+
+    if (calcData.material === "premium") pricePerSqm = 750;
+    if (calcData.material === "exclusive") pricePerSqm = 1200;
+
+    setCalculatedPrice(Math.round(area * pricePerSqm));
+  };
+
+  const quizQuestions = [
+    {
+      question: "Co chcesz zabezpieczyć?",
+      options: [
+        { label: "Altana ogrodowa", value: "gazebo", icon: "Home" },
+        { label: "Taras", value: "terrace", icon: "Building" },
+        { label: "Weranda restauracji", value: "restaurant", icon: "Coffee" },
+        { label: "Balkon", value: "balcony", icon: "Building2" },
+      ],
+    },
+    {
+      question: "Jaki rozmiar powierzchni?",
+      options: [
+        { label: "Do 10 m²", value: "small", icon: "Minimize2" },
+        { label: "10-20 m²", value: "medium", icon: "Square" },
+        { label: "20-40 m²", value: "large", icon: "Maximize2" },
+        { label: "Powyżej 40 m²", value: "xlarge", icon: "Expand" },
+      ],
+    },
+    {
+      question: "Kiedy potrzebujesz montażu?",
+      options: [
+        { label: "W ciągu tygodnia", value: "urgent", icon: "Zap" },
+        { label: "W ciągu miesiąca", value: "normal", icon: "Calendar" },
+        { label: "Bez pośpiechu", value: "flexible", icon: "Clock" },
+      ],
+    },
+  ];
+
+  const handleQuizAnswer = (field: string, value: string) => {
+    setQuizAnswers({ ...quizAnswers, [field]: value });
+    if (quizStep < quizQuestions.length - 1) {
+      setQuizStep(quizStep + 1);
+    }
+  };
+
+  const resetQuiz = () => {
+    setQuizStep(0);
+    setQuizAnswers({ type: "", size: "", installation: "" });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -231,6 +301,215 @@ const Index = () => {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-4xl font-bold text-center mb-4">
+            Kalkulator kosztów
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Oblicz orientacyjny koszt w 30 sekund
+          </p>
+          <Card className="shadow-xl">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Szerokość (m)</label>
+                  <Input
+                    type="number"
+                    placeholder="3.5"
+                    value={calcData.width}
+                    onChange={(e) => setCalcData({ ...calcData, width: e.target.value })}
+                    className="h-12"
+                    step="0.1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Wysokość (m)</label>
+                  <Input
+                    type="number"
+                    placeholder="2.5"
+                    value={calcData.height}
+                    onChange={(e) => setCalcData({ ...calcData, height: e.target.value })}
+                    className="h-12"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-3">Rodzaj materiału</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <button
+                    onClick={() => setCalcData({ ...calcData, material: "standard" })}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      calcData.material === "standard"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="text-lg font-semibold">Standard</div>
+                    <div className="text-sm text-muted-foreground">500 mikronów</div>
+                    <div className="text-primary font-bold mt-2">450 PLN/m²</div>
+                  </button>
+                  <button
+                    onClick={() => setCalcData({ ...calcData, material: "premium" })}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      calcData.material === "premium"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="text-lg font-semibold">Premium</div>
+                    <div className="text-sm text-muted-foreground">700 mikronów</div>
+                    <div className="text-primary font-bold mt-2">750 PLN/m²</div>
+                  </button>
+                  <button
+                    onClick={() => setCalcData({ ...calcData, material: "exclusive" })}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      calcData.material === "exclusive"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="text-lg font-semibold">Exclusive</div>
+                    <div className="text-sm text-muted-foreground">900 mikronów</div>
+                    <div className="text-primary font-bold mt-2">1200 PLN/m²</div>
+                  </button>
+                </div>
+              </div>
+              <Button onClick={calculatePrice} size="lg" className="w-full mb-4">
+                <Icon name="Calculator" size={20} className="mr-2" />
+                Oblicz koszt
+              </Button>
+              {calculatedPrice !== null && (
+                <div className="bg-primary/10 rounded-xl p-6 text-center animate-fade-in">
+                  <p className="text-sm text-muted-foreground mb-2">Orientacyjny koszt</p>
+                  <p className="text-4xl font-bold text-primary">{calculatedPrice} PLN</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Powierzchnia: {(parseFloat(calcData.width) * parseFloat(calcData.height)).toFixed(2)} m²
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-4xl font-bold text-center mb-4">
+            Dobierz idealne rozwiązanie
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Odpowiedz na 3 pytania i otrzymaj spersonalizowaną ofertę
+          </p>
+          <Card className="shadow-xl">
+            <CardContent className="p-8">
+              {quizStep < quizQuestions.length ? (
+                <div className="animate-fade-in">
+                  <div className="mb-8">
+                    <div className="flex gap-2 mb-6">
+                      {quizQuestions.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`h-2 flex-1 rounded-full transition-colors ${
+                            index <= quizStep ? "bg-primary" : "bg-muted"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-6">
+                      {quizQuestions[quizStep].question}
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {quizQuestions[quizStep].options.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          handleQuizAnswer(
+                            quizStep === 0 ? "type" : quizStep === 1 ? "size" : "installation",
+                            option.value
+                          )
+                        }
+                        className="p-6 rounded-xl border-2 border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
+                      >
+                        <Icon
+                          name={option.icon}
+                          size={32}
+                          className="text-primary mb-3 group-hover:scale-110 transition-transform"
+                        />
+                        <div className="font-semibold text-lg">{option.label}</div>
+                      </button>
+                    ))}
+                  </div>
+                  {quizStep > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setQuizStep(quizStep - 1)}
+                      className="mt-6"
+                    >
+                      <Icon name="ArrowLeft" size={16} className="mr-2" />
+                      Wstecz
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center animate-fade-in">
+                  <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Icon name="CheckCircle" size={48} className="text-secondary" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">Dziękujemy za odpowiedzi!</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Twoje preferencje: {quizAnswers.type}, {quizAnswers.size}, {quizAnswers.installation}
+                  </p>
+                  <p className="text-lg mb-8">
+                    Nasi specjaliści skontaktują się z Tobą w ciągu 15 minut z najlepszą ofertą.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button size="lg">
+                      <Icon name="Phone" size={20} className="mr-2" />
+                      Zadzwoń teraz
+                    </Button>
+                    <Button variant="outline" size="lg" onClick={resetQuiz}>
+                      <Icon name="RotateCcw" size={20} className="mr-2" />
+                      Zacznij od nowa
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-4xl font-bold text-center mb-4">
+            Zobacz jak pracujemy
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Profesjonalny montaż krok po kroku
+          </p>
+          <Card className="overflow-hidden shadow-2xl">
+            <div className="relative aspect-video bg-gradient-to-br from-primary/20 to-secondary/20">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <button className="w-20 h-20 bg-white rounded-full flex items-center justify-center hover-scale shadow-xl group">
+                  <Icon name="Play" size={32} className="text-primary ml-1 group-hover:scale-110 transition-transform" />
+                </button>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                <h3 className="text-white text-xl font-semibold mb-2">
+                  Montaż miękich okien - pełny proces
+                </h3>
+                <p className="text-white/80 text-sm">
+                  Od pomiaru do gotowej instalacji w jeden dzień
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
 
